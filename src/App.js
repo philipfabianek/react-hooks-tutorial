@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
 
 function App() {
@@ -8,6 +8,15 @@ function App() {
     property1: "property 1",
     property2: "property 2",
   });
+
+  useEffect(() => {
+    console.log("useEffect");
+    console.log("State value has changed to", stateValue);
+
+    return () => {
+      console.log("clean-up function");
+    };
+  }, [stateValue]);
 
   return (
     <div className="App">
