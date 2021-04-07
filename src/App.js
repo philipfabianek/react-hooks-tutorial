@@ -1,7 +1,10 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './App.css';
 
+const ColorContext = React.createContext();
+
 function App() {
+  const [color, updateColor] = useState("blue");
   const [stateValue, updateStateValue] = useState(1);
 
   const [objectState, updateObjectState] = useState({
@@ -49,8 +52,32 @@ function App() {
       }}>
         Update property 1
       </button>
+
+      <ColorContext.Provider value={color}>
+        <NestedComponent />
+      </ColorContext.Provider>
+
+      <button onClick={() => {
+        if (color === "blue") {
+          updateColor("red");
+        } else {
+          updateColor("blue");
+        }
+      }}>
+        Switch color
+      </button>
     </div>
   );
+}
+
+function NestedComponent() {
+  const color = useContext(ColorContext);
+  
+  return (
+    <h3 style={{ color }}>
+      NestedComponent
+    </h3>
+  )
 }
 
 export default App;
