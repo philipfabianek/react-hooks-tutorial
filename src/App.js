@@ -1,11 +1,33 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useReducer } from 'react';
 import './App.css';
 
 const ColorContext = React.createContext();
 
+const initialCounterState = {
+  counterValue: 0,
+};
+
+const counterReducer = (state, action) => {
+  if (action.type === "increment") {
+    return {
+      ...state,
+      counterValue: state.counterValue + 1,
+    }
+  } else if (action.type === "decrement") {
+    return {
+      ...state,
+      counterValue: state.counterValue - 1,
+    }
+  }
+};
+
 function App() {
   const [color, updateColor] = useState("blue");
   const [stateValue, updateStateValue] = useState(1);
+  const [counterState, dispatch] = useReducer(
+    counterReducer,
+    initialCounterState,
+  )
 
   const [objectState, updateObjectState] = useState({
     property1: "property 1",
@@ -23,7 +45,7 @@ function App() {
 
   return (
     <div className="App">
-      {stateValue}
+      {/* {stateValue}
 
       <button onClick={() => {
         const newStateValue = stateValue + 1;
@@ -37,7 +59,20 @@ function App() {
         });
       }}>
         -
-      </button>
+      </button> */}
+
+    {counterState.counterValue}
+
+    <button onClick={() => {
+      dispatch({ type: "increment" });
+    }}>
+      +
+    </button>
+    <button onClick={() => {
+      dispatch({ type: "decrement" });
+    }}>
+      -
+    </button>
 
       <p>{objectState.property1}</p>
       <p>{objectState.property2}</p>
