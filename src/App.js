@@ -3,6 +3,19 @@ import './App.css';
 
 const ColorContext = React.createContext();
 
+const initialColorState = {
+  color: "blue",
+};
+
+const colorReducer = (state, action) => {
+  if (action.type === "set") {
+    return {
+      ...state,
+      color: action.color,
+    };
+  }
+};
+
 const initialCounterState = {
   counterValue: 0,
 };
@@ -27,7 +40,11 @@ function App() {
   const [counterState, dispatch] = useReducer(
     counterReducer,
     initialCounterState,
-  )
+  );
+  const [colorState, colorDispatch] = useReducer(
+    colorReducer,
+    initialColorState,
+  );
 
   const [objectState, updateObjectState] = useState({
     property1: "property 1",
@@ -44,6 +61,10 @@ function App() {
   }, [stateValue]);
 
   return (
+    <ColorContext.Provider value={{
+      colorState: colorState,
+      colorDispatch: colorDispatch,
+    }}>
     <div className="App">
       {/* {stateValue}
 
@@ -88,28 +109,27 @@ function App() {
         Update property 1
       </button>
 
-      <ColorContext.Provider value={color}>
-        <NestedComponent />
-      </ColorContext.Provider>
+      <NestedComponent />
 
       <button onClick={() => {
-        if (color === "blue") {
-          updateColor("red");
+        if (colorState.color === "blue") {
+          colorDispatch({ type: "set", color: "red" });
         } else {
-          updateColor("blue");
+          colorDispatch({ type: "set", color: "blue" });
         }
       }}>
         Switch color
       </button>
     </div>
+    </ColorContext.Provider>
   );
 }
 
 function NestedComponent() {
-  const color = useContext(ColorContext);
+  const { colorState } = useContext(ColorContext);
   
   return (
-    <h3 style={{ color }}>
+    <h3 style={{ color: colorState.color }}>
       NestedComponent
     </h3>
   )
