@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useReducer } from 'react';
+import React, { useState, useEffect, useContext, useReducer, useRef } from 'react';
 import './App.css';
 
 const ColorContext = React.createContext();
@@ -50,6 +50,12 @@ function App() {
     property1: "property 1",
     property2: "property 2",
   });
+
+  const inputElementReference = useRef(null);
+
+  useEffect(() => {
+    inputElementReference.current.focus();
+  }, []);
 
   useEffect(() => {
     console.log("useEffect");
@@ -120,6 +126,12 @@ function App() {
       }}>
         Switch color
       </button>
+      <div>
+        <input
+          ref={inputElementReference}
+          placeholder="This should be focused"
+        />
+      </div>
     </div>
     </ColorContext.Provider>
   );
