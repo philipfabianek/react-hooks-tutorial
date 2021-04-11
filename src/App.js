@@ -1,4 +1,12 @@
-import React, { useState, useEffect, useContext, useReducer, useRef } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useContext,
+  useReducer,
+  useRef,
+  useMemo,
+  useCallback,
+} from 'react';
 import './App.css';
 
 const ColorContext = React.createContext();
@@ -57,6 +65,15 @@ function App() {
     inputElementReference.current.focus();
   }, []);
 
+  const counterSquareRoot = useMemo(() => {
+    console.log("calculate square root");
+    return Math.sqrt(counterState.counterValue);
+  }, [counterState.counterValue]);
+
+  const logCounterValue = useCallback(() => {
+    console.log("logcountervalue", counterState.counterValue);
+  }, [counterState.counterValue]);
+
   useEffect(() => {
     console.log("useEffect");
     console.log("State value has changed to", stateValue);
@@ -71,68 +88,76 @@ function App() {
       colorState: colorState,
       colorDispatch: colorDispatch,
     }}>
-    <div className="App">
-      {/* {stateValue}
+      <div className="App">
+        {/* {stateValue}
 
-      <button onClick={() => {
-        const newStateValue = stateValue + 1;
-        updateStateValue(newStateValue);
-      }}>
-        +
-      </button>
-      <button onClick={() => {
-        updateStateValue((previousStateValue) => {
-          return previousStateValue - 1;
-        });
-      }}>
-        -
-      </button> */}
+        <button onClick={() => {
+          const newStateValue = stateValue + 1;
+          updateStateValue(newStateValue);
+        }}>
+          +
+        </button>
+        <button onClick={() => {
+          updateStateValue((previousStateValue) => {
+            return previousStateValue - 1;
+          });
+        }}>
+          -
+        </button> */}
 
-    {counterState.counterValue}
+        {counterState.counterValue}
 
-    <button onClick={() => {
-      dispatch({ type: "increment" });
-    }}>
-      +
-    </button>
-    <button onClick={() => {
-      dispatch({ type: "decrement" });
-    }}>
-      -
-    </button>
+        <button onClick={() => {
+          dispatch({ type: "increment" });
+        }}>
+          +
+        </button>
+        <button onClick={() => {
+          dispatch({ type: "decrement" });
+        }}>
+          -
+        </button>
 
-      <p>{objectState.property1}</p>
-      <p>{objectState.property2}</p>
+        <p>
+          The square root is: {counterSquareRoot}
+        </p>
 
-      <button onClick={() => {
-        updateObjectState((previousObjectState) => {
-          return {
-            ...previousObjectState,
-            property1: "Updated property 1",
-          };
-        });
-      }}>
-        Update property 1
-      </button>
+        <p>{objectState.property1}</p>
+        <p>{objectState.property2}</p>
 
-      <NestedComponent />
+        <button onClick={() => {
+          updateObjectState((previousObjectState) => {
+            return {
+              ...previousObjectState,
+              property1: "Updated property 1",
+            };
+          });
+        }}>
+          Update property 1
+        </button>
 
-      <button onClick={() => {
-        if (colorState.color === "blue") {
-          colorDispatch({ type: "set", color: "red" });
-        } else {
-          colorDispatch({ type: "set", color: "blue" });
-        }
-      }}>
-        Switch color
-      </button>
-      <div>
-        <input
-          ref={inputElementReference}
-          placeholder="This should be focused"
+        <NestedComponent />
+
+        <PureNestedComponent
+          logCounterValue={logCounterValue}
         />
+
+        <button onClick={() => {
+          if (colorState.color === "blue") {
+            colorDispatch({ type: "set", color: "red" });
+          } else {
+            colorDispatch({ type: "set", color: "blue" });
+          }
+        }}>
+          Switch color
+        </button>
+        <div>
+          <input
+            ref={inputElementReference}
+            placeholder="This should be focused"
+          />
+        </div>
       </div>
-    </div>
     </ColorContext.Provider>
   );
 }
@@ -145,6 +170,18 @@ function NestedComponent() {
       NestedComponent
     </h3>
   )
+}
+
+class PureNestedComponent extends React.PureComponent {
+  render() {
+    this.props.logCounterValue();
+    
+    return (
+      <h3>
+        PureNestedComponent
+      </h3>
+    )
+  }
 }
 
 export default App;
