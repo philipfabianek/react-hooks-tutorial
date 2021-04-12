@@ -42,6 +42,26 @@ const counterReducer = (state, action) => {
   }
 };
 
+const useLocalStorageValue = (key, initialValue) => {
+  const [stateValue, setStateValue] = useState(() => {
+    const storedValue = JSON.parse(localStorage.getItem(key));
+    return storedValue || initialValue;
+  });
+
+  const setStorageValue = (newValue) => {
+    let valueToStore;
+    if (newValue instanceof Function) {
+      valueToStore = newValue(stateValue);
+    } else {
+      valueToStore = newValue;
+    }
+    setStateValue(valueToStore);
+    localStorage.setItem(key, JSON.stringify(valueToStore));
+  };
+
+  return [stateValue, setStorageValue];
+};
+
 function App() {
   const [color, updateColor] = useState("blue");
   const [stateValue, updateStateValue] = useState(1);
@@ -54,7 +74,7 @@ function App() {
     initialColorState,
   );
 
-  const [objectState, updateObjectState] = useState({
+  const [objectState, updateObjectState] = useLocalStorageValue("objectstate", {
     property1: "property 1",
     property2: "property 2",
   });
