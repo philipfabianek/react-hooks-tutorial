@@ -6,6 +6,8 @@ import React, {
   useRef,
   useMemo,
   useCallback,
+  useDebugValue,
+  useLayoutEffect,
 } from 'react';
 import './App.css';
 
@@ -47,6 +49,8 @@ const useLocalStorageValue = (key, initialValue) => {
     const storedValue = JSON.parse(localStorage.getItem(key));
     return storedValue || initialValue;
   });
+
+  useDebugValue("custom label")
 
   const setStorageValue = (newValue) => {
     let valueToStore;
@@ -102,6 +106,10 @@ function App() {
       console.log("clean-up function");
     };
   }, [stateValue]);
+
+  // useLayoutEffect(() => {
+  //   document.body.style.backgroundColor = "#000";
+  // }, []);
 
   return (
     <ColorContext.Provider value={{
