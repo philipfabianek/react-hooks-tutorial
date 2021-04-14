@@ -8,6 +8,7 @@ import React, {
   useCallback,
   useDebugValue,
   useLayoutEffect,
+  useImperativeHandle,
 } from 'react';
 import './App.css';
 
@@ -190,13 +191,43 @@ function App() {
   );
 }
 
+const NestedInput = React.forwardRef((props, forwardedRef) => {
+  const localInputRef = useRef();
+
+  useImperativeHandle(forwardedRef, () => {
+    return {
+      focusAndBlur: () => {
+        localInputRef.current.focus();
+        setTimeout(() => {
+          localInputRef.current.blur();
+        }, 1000);
+      },
+    };
+  });
+
+  return (
+    <input
+      ref={localInputRef}
+    />
+  )
+});
+
 function NestedComponent() {
   const { colorState } = useContext(ColorContext);
+  const nestedInputRef = useRef();
   
   return (
-    <h3 style={{ color: colorState.color }}>
-      NestedComponent
-    </h3>
+    <div>
+      <h3 style={{ color: colorState.color }}>
+        NestedComponent
+      </h3>
+      <NestedInput ref={nestedInputRef} />
+      <button onClick={() => {
+        nestedInputRef.current.focusAndBlur();
+      }}>
+        Focus and blur
+      </button>
+    </div>
   )
 }
 
